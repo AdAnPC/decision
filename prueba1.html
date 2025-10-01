@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Árbol de Decisión Interactivo - Gestión de Inventario</title>
+    <title>Árbol de Decisión - Gestión de Inventario</title>
     <style>
         body {
             box-sizing: border-box;
@@ -44,198 +44,6 @@
 
         .content {
             padding: 40px;
-        }
-
-        .input-panel {
-            margin-bottom: 30px;
-            padding: 25px;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 15px;
-            border-left: 5px solid #28a745;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .input-panel h3 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 1.3em;
-            text-align: center;
-        }
-
-        .input-panel h4 {
-            color: #495057;
-            margin: 25px 0 15px 0;
-            font-size: 1.1em;
-            border-bottom: 2px solid #dee2e6;
-            padding-bottom: 8px;
-        }
-
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .input-group:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-        }
-
-        .input-group label {
-            display: block;
-            font-weight: 600;
-            color: #495057;
-            margin-bottom: 8px;
-            font-size: 0.95em;
-        }
-
-        .input-group input[type="number"] {
-            width: 100%;
-            padding: 10px 12px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            font-size: 1em;
-            transition: all 0.3s ease;
-            box-sizing: border-box;
-        }
-
-        .input-group input[type="number"]:focus {
-            outline: none;
-            border-color: #28a745;
-            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
-        }
-
-        .probability-controls {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
-        .prob-slider {
-            margin-bottom: 15px;
-        }
-
-        .prob-slider label {
-            display: block;
-            font-weight: 600;
-            color: #495057;
-            margin-bottom: 8px;
-        }
-
-        .prob-slider input[type="range"] {
-            width: 100%;
-            height: 8px;
-            border-radius: 4px;
-            background: #dee2e6;
-            outline: none;
-            -webkit-appearance: none;
-        }
-
-        .prob-slider input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #28a745, #20c997);
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }
-
-        .prob-slider input[type="range"]::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #28a745, #20c997);
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }
-
-        .prob-info {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 8px;
-            border-left: 4px solid #6c757d;
-            margin-top: 10px;
-        }
-
-        .prob-info small {
-            display: block;
-            color: #6c757d;
-            font-style: italic;
-            margin-top: 5px;
-        }
-
-        .control-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .reset-button, .random-button {
-            background: linear-gradient(135deg, #6c757d, #495057);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1em;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3);
-        }
-
-        .reset-button:hover, .random-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(108, 117, 125, 0.4);
-        }
-
-        .random-button {
-            background: linear-gradient(135deg, #fd7e14, #e55a4e);
-            box-shadow: 0 4px 10px rgba(253, 126, 20, 0.3);
-        }
-
-        .random-button:hover {
-            box-shadow: 0 6px 15px rgba(253, 126, 20, 0.4);
-        }
-
-        .update-indicator {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-            z-index: 1000;
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .update-indicator.show {
-            opacity: 1;
-            animation: pulse 0.6s ease;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.05); }
         }
 
         .tree-container {
@@ -687,101 +495,17 @@
             .criteria-table {
                 font-size: 0.9em;
             }
-
-            .input-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .control-buttons {
-                flex-direction: column;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🌳 Árbol de Decisión Interactivo - Gestión de Inventario</h1>
+            <h1>🌳 Árbol de Decisión - Gestión de Inventario</h1>
             <p>Distribuciones Rápidas S.A.S. - Análisis de Decisiones bajo Incertidumbre</p>
         </div>
 
         <div class="content">
-            <!-- Panel de Parámetros de Entrada -->
-            <div class="input-panel">
-                <h3>⚙️ Parámetros del Problema</h3>
-                <div class="input-grid">
-                    <div class="input-group">
-                        <label for="costoFijo">💰 Costo Fijo ($)</label>
-                        <input type="number" id="costoFijo" value="50" min="0" max="1000">
-                    </div>
-                    <div class="input-group">
-                        <label for="costoUnitario">📦 Costo Unitario ($)</label>
-                        <input type="number" id="costoUnitario" value="10" min="1" max="100">
-                    </div>
-                    <div class="input-group">
-                        <label for="costoAlmacen">🏪 Costo Almacenamiento ($)</label>
-                        <input type="number" id="costoAlmacen" value="1" min="0" max="10" step="0.1">
-                    </div>
-                    <div class="input-group">
-                        <label for="costoFaltante">⚠️ Costo Faltante ($)</label>
-                        <input type="number" id="costoFaltante" value="5" min="0" max="50">
-                    </div>
-                </div>
-
-                <h4>📊 Alternativas de Pedido</h4>
-                <div class="input-grid">
-                    <div class="input-group">
-                        <label for="pedidoBajo">📦 Pedido Bajo (unidades)</label>
-                        <input type="number" id="pedidoBajo" value="120" min="50" max="500">
-                    </div>
-                    <div class="input-group">
-                        <label for="pedidoMedio">📦 Pedido Medio (unidades)</label>
-                        <input type="number" id="pedidoMedio" value="200" min="100" max="600">
-                    </div>
-                    <div class="input-group">
-                        <label for="pedidoAlto">📦 Pedido Alto (unidades)</label>
-                        <input type="number" id="pedidoAlto" value="300" min="200" max="800">
-                    </div>
-                </div>
-
-                <h4>🎯 Escenarios de Demanda</h4>
-                <div class="input-grid">
-                    <div class="input-group">
-                        <label for="demandaAlta">🔥 Demanda Alta (unidades)</label>
-                        <input type="number" id="demandaAlta" value="300" min="200" max="800">
-                    </div>
-                    <div class="input-group">
-                        <label for="demandaMedia">📊 Demanda Media (unidades)</label>
-                        <input type="number" id="demandaMedia" value="200" min="100" max="600">
-                    </div>
-                    <div class="input-group">
-                        <label for="demandaBaja">📉 Demanda Baja (unidades)</label>
-                        <input type="number" id="demandaBaja" value="100" min="50" max="400">
-                    </div>
-                </div>
-
-                <h4>🎲 Probabilidades de Escenarios</h4>
-                <div class="probability-controls">
-                    <div class="prob-slider">
-                        <label for="probAlta">🔥 P(Demanda Alta): <span id="probAltaValue">30%</span></label>
-                        <input type="range" id="probAlta" min="10" max="80" value="30">
-                    </div>
-                    <div class="prob-slider">
-                        <label for="probMedia">📊 P(Demanda Media): <span id="probMediaValue">50%</span></label>
-                        <input type="range" id="probMedia" min="10" max="80" value="50">
-                    </div>
-                    <div class="prob-info">
-                        <span>📉 P(Demanda Baja): <span id="probBajaValue">20%</span> (automático)</span>
-                        <small>Las probabilidades deben sumar 100%</small>
-                    </div>
-                </div>
-
-                <div class="control-buttons">
-                    <button onclick="resetToDefaults()" class="reset-button">🔄 Valores por Defecto</button>
-                    <button onclick="randomizeParameters()" class="random-button">🎲 Valores Aleatorios</button>
-                </div>
-            </div>
-
             <div class="tree-container">
                 <div class="tree">
                     <!-- Nodo de decisión principal -->
@@ -820,7 +544,7 @@
                             <div class="scenario">
                                 🔥 Alta Demanda<br>
                                 <small>300 unidades</small>
-                                <div class="probability">P = 30%</div>
+                                <div class="probability">P = 0.30</div>
                             </div>
                             <div class="outcome cost-negative">
                                 💰 $2,150<br>
@@ -830,7 +554,7 @@
                             <div class="scenario">
                                 📊 Demanda Media<br>
                                 <small>200 unidades</small>
-                                <div class="probability">P = 50%</div>
+                                <div class="probability">P = 0.50</div>
                             </div>
                             <div class="outcome cost-negative">
                                 💰 $1,650<br>
@@ -840,7 +564,7 @@
                             <div class="scenario">
                                 📉 Baja Demanda<br>
                                 <small>100 unidades</small>
-                                <div class="probability">P = 20%</div>
+                                <div class="probability">P = 0.20</div>
                             </div>
                             <div class="outcome cost-positive">
                                 💰 $1,270<br>
@@ -853,7 +577,7 @@
                             <div class="scenario">
                                 🔥 Alta Demanda<br>
                                 <small>300 unidades</small>
-                                <div class="probability">P = 30%</div>
+                                <div class="probability">P = 0.30</div>
                             </div>
                             <div class="outcome cost-negative">
                                 💰 $2,550<br>
@@ -863,7 +587,7 @@
                             <div class="scenario">
                                 📊 Demanda Media<br>
                                 <small>200 unidades</small>
-                                <div class="probability">P = 50%</div>
+                                <div class="probability">P = 0.50</div>
                             </div>
                             <div class="outcome cost-positive">
                                 💰 $2,050<br>
@@ -873,7 +597,7 @@
                             <div class="scenario">
                                 📉 Baja Demanda<br>
                                 <small>100 unidades</small>
-                                <div class="probability">P = 20%</div>
+                                <div class="probability">P = 0.20</div>
                             </div>
                             <div class="outcome cost-negative">
                                 💰 $2,150<br>
@@ -886,7 +610,7 @@
                             <div class="scenario">
                                 🔥 Alta Demanda<br>
                                 <small>300 unidades</small>
-                                <div class="probability">P = 30%</div>
+                                <div class="probability">P = 0.30</div>
                             </div>
                             <div class="outcome cost-positive">
                                 💰 $3,050<br>
@@ -896,7 +620,7 @@
                             <div class="scenario">
                                 📊 Demanda Media<br>
                                 <small>200 unidades</small>
-                                <div class="probability">P = 50%</div>
+                                <div class="probability">P = 0.50</div>
                             </div>
                             <div class="outcome cost-negative">
                                 💰 $2,150<br>
@@ -906,7 +630,7 @@
                             <div class="scenario">
                                 📉 Baja Demanda<br>
                                 <small>100 unidades</small>
-                                <div class="probability">P = 20%</div>
+                                <div class="probability">P = 0.20</div>
                             </div>
                             <div class="outcome cost-negative">
                                 💰 $1,250<br>
@@ -923,11 +647,11 @@
                 <div class="calc-grid">
                     <div class="calc-item">
                         <h4>Fórmula General de Costos</h4>
-                        <div class="formula" id="formula-general">
-                            Costo Total = 50 + (Pedido × 10) + Almacenamiento + Faltantes
+                        <div class="formula">
+                            Costo Total = Costo Fijo + (Pedido × Costo Unitario) + Costo Almacenamiento + Costo Faltantes
                         </div>
-                        <p><strong>Parámetros actuales:</strong></p>
-                        <ul id="parametros-actuales">
+                        <p><strong>Donde:</strong></p>
+                        <ul>
                             <li>Costo Fijo = $50</li>
                             <li>Costo Unitario = $10</li>
                             <li>Almacenamiento = $1 × (Pedido - Demanda) si Pedido > Demanda</li>
@@ -936,8 +660,8 @@
                     </div>
 
                     <div class="calc-item">
-                        <h4>Ejemplo Dinámico: Pedido Bajo vs Alta Demanda</h4>
-                        <div class="formula" id="ejemplo-1">
+                        <h4>Ejemplo: Pedido Bajo vs Alta Demanda</h4>
+                        <div class="formula">
                             Pedido = 120, Demanda = 300<br>
                             Faltantes = 300 - 120 = 180 unidades<br>
                             Costo = $50 + (120×$10) + $0 + (180×$5)<br>
@@ -946,13 +670,14 @@
                     </div>
 
                     <div class="calc-item">
-                        <h4>Ejemplo Dinámico: Pedido Alto vs Baja Demanda</h4>
-                        <div class="formula" id="ejemplo-2">
+                        <h4>Ejemplo: Pedido Alto vs Baja Demanda</h4>
+                        <div class="formula">
                             Pedido = 300, Demanda = 100<br>
                             Exceso = 300 - 100 = 200 unidades<br>
                             Costo = $50 + (300×$10) + (200×$1) + $0<br>
                             Costo = $50 + $3,000 + $200 + $0 = $3,250
                         </div>
+                        <p><strong>Nota:</strong> El costo mostrado en el árbol ($1,250) representa solo los costos variables adicionales por la decisión.</p>
                     </div>
                 </div>
             </div>
@@ -1110,7 +835,7 @@
                     
                     <div class="hurwicz-controls">
                         <label for="alpha">Coeficiente de Optimismo (α): <span id="alpha-value">0.5</span></label>
-                        <input type="range" id="alpha" min="0" max="1" step="0.1" value="0.5">
+                        <input type="range" id="alpha" min="0" max="1" step="0.1" value="0.5" onchange="calculateHurwicz()">
                         <small>α = 0 (totalmente pesimista) | α = 1 (totalmente optimista)</small>
                     </div>
                     
@@ -1184,8 +909,8 @@
                         </div>
                         
                         <div class="probability-analysis">
-                            <h5>📊 Análisis de Probabilidades Actuales</h5>
-                            <div class="prob-grid" id="prob-analysis-grid">
+                            <h5>📊 Análisis de Probabilidades Reales</h5>
+                            <div class="prob-grid">
                                 <div class="prob-item">
                                     <strong>Alta Demanda:</strong> 30%<br>
                                     <small>Escenario menos probable pero de alto impacto</small>
@@ -1231,475 +956,6 @@
     </div>
 
     <script>
-        // Variables globales para parámetros
-        let parameters = {
-            costoFijo: 50,
-            costoUnitario: 10,
-            costoAlmacen: 1,
-            costoFaltante: 5,
-            pedidoBajo: 120,
-            pedidoMedio: 200,
-            pedidoAlto: 300,
-            demandaAlta: 300,
-            demandaMedia: 200,
-            demandaBaja: 100,
-            probAlta: 0.3,
-            probMedia: 0.5,
-            probBaja: 0.2
-        };
-
-        // Matriz de costos global
-        let costsMatrix = {};
-
-        // Función para mostrar indicador de actualización
-        function showUpdateIndicator(message = "¡Parámetros actualizados!") {
-            let indicator = document.getElementById('update-indicator');
-            if (!indicator) {
-                indicator = document.createElement('div');
-                indicator.id = 'update-indicator';
-                indicator.className = 'update-indicator';
-                document.body.appendChild(indicator);
-            }
-            indicator.textContent = message;
-            indicator.classList.add('show');
-            setTimeout(() => {
-                indicator.classList.remove('show');
-            }, 2000);
-        }
-
-        // Función para actualizar parámetros
-        function updateParameters() {
-            // Leer valores de los inputs
-            parameters.costoFijo = parseFloat(document.getElementById('costoFijo').value);
-            parameters.costoUnitario = parseFloat(document.getElementById('costoUnitario').value);
-            parameters.costoAlmacen = parseFloat(document.getElementById('costoAlmacen').value);
-            parameters.costoFaltante = parseFloat(document.getElementById('costoFaltante').value);
-            parameters.pedidoBajo = parseInt(document.getElementById('pedidoBajo').value);
-            parameters.pedidoMedio = parseInt(document.getElementById('pedidoMedio').value);
-            parameters.pedidoAlto = parseInt(document.getElementById('pedidoAlto').value);
-            parameters.demandaAlta = parseInt(document.getElementById('demandaAlta').value);
-            parameters.demandaMedia = parseInt(document.getElementById('demandaMedia').value);
-            parameters.demandaBaja = parseInt(document.getElementById('demandaBaja').value);
-
-            // Actualizar TODO completamente
-            fullSystemUpdate();
-            
-            showUpdateIndicator();
-        }
-
-        // Función para actualización completa del sistema
-        function fullSystemUpdate() {
-            // 1. Recalcular matriz de costos
-            recalculateCosts();
-            
-            // 2. Actualizar árbol visual completo
-            updateTreeDisplay();
-            
-            // 3. Actualizar todas las fórmulas y ejemplos
-            updateExampleFormulas();
-            
-            // 4. Recalcular TODOS los criterios de decisión
-            recalculateAllCriteria();
-            
-            // 5. Actualizar análisis de probabilidades
-            updateProbabilityAnalysis();
-            
-            // 6. Actualizar Hurwicz con valores actuales
-            calculateHurwicz();
-            
-            // 7. Limpiar resultados de simulación para forzar nueva ejecución
-            resetSimulationResults();
-            
-            // 8. Actualizar todas las tablas de criterios
-            updateAllCriteriaTables();
-        }
-
-        // Función para actualizar probabilidades
-        function updateProbabilities() {
-            const probAlta = parseInt(document.getElementById('probAlta').value);
-            const probMedia = parseInt(document.getElementById('probMedia').value);
-            const probBaja = 100 - probAlta - probMedia;
-            
-            // Validar que las probabilidades sean válidas
-            if (probBaja < 0) {
-                document.getElementById('probMedia').value = 100 - probAlta;
-                return updateProbabilities();
-            }
-            
-            // Actualizar displays
-            document.getElementById('probAltaValue').textContent = probAlta + '%';
-            document.getElementById('probMediaValue').textContent = probMedia + '%';
-            document.getElementById('probBajaValue').textContent = probBaja + '%';
-            
-            // Actualizar parámetros
-            parameters.probAlta = probAlta / 100;
-            parameters.probMedia = probMedia / 100;
-            parameters.probBaja = probBaja / 100;
-            
-            // Actualizar TODO el sistema con las nuevas probabilidades
-            fullSystemUpdate();
-            
-            showUpdateIndicator("¡Probabilidades actualizadas!");
-        }
-
-        // Función para calcular costos
-        function calculateCost(pedido, demanda) {
-            const faltante = Math.max(0, demanda - pedido);
-            const exceso = Math.max(0, pedido - demanda);
-            
-            return parameters.costoFijo + 
-                   (pedido * parameters.costoUnitario) + 
-                   (exceso * parameters.costoAlmacen) + 
-                   (faltante * parameters.costoFaltante);
-        }
-
-        // Función para recalcular todos los costos
-        function recalculateCosts() {
-            const pedidos = [parameters.pedidoBajo, parameters.pedidoMedio, parameters.pedidoAlto];
-            const demandas = [parameters.demandaAlta, parameters.demandaMedia, parameters.demandaBaja];
-            const alternativas = ['bajo', 'medio', 'alto'];
-            
-            alternativas.forEach((alt, i) => {
-                costsMatrix[alt] = demandas.map(demanda => calculateCost(pedidos[i], demanda));
-            });
-        }
-
-        // Función para actualizar la visualización del árbol
-        function updateTreeDisplay() {
-            // Actualizar cantidades en alternativas
-            const alternatives = document.querySelectorAll('.alternative');
-            alternatives[0].innerHTML = `📦 Pedido Bajo<br><small>${parameters.pedidoBajo} unidades</small><div class="line vertical-line"></div>`;
-            alternatives[1].innerHTML = `📦 Pedido Medio<br><small>${parameters.pedidoMedio} unidades</small><div class="line vertical-line"></div>`;
-            alternatives[2].innerHTML = `📦 Pedido Alto<br><small>${parameters.pedidoAlto} unidades</small><div class="line vertical-line"></div>`;
-            
-            // Actualizar escenarios de demanda
-            const scenarios = document.querySelectorAll('.scenario');
-            for (let i = 0; i < scenarios.length; i += 3) {
-                scenarios[i].innerHTML = `🔥 Alta Demanda<br><small>${parameters.demandaAlta} unidades</small><div class="probability">P = ${(parameters.probAlta * 100).toFixed(0)}%</div>`;
-                scenarios[i + 1].innerHTML = `📊 Demanda Media<br><small>${parameters.demandaMedia} unidades</small><div class="probability">P = ${(parameters.probMedia * 100).toFixed(0)}%</div>`;
-                scenarios[i + 2].innerHTML = `📉 Baja Demanda<br><small>${parameters.demandaBaja} unidades</small><div class="probability">P = ${(parameters.probBaja * 100).toFixed(0)}%</div>`;
-            }
-            
-            // Actualizar resultados de costos
-            const outcomes = document.querySelectorAll('.outcome');
-            const alternativas = ['bajo', 'medio', 'alto'];
-            const demandas = [parameters.demandaAlta, parameters.demandaMedia, parameters.demandaBaja];
-            
-            let outcomeIndex = 0;
-            alternativas.forEach((alt, altIndex) => {
-                demandas.forEach((demanda, demIndex) => {
-                    const costo = costsMatrix[alt][demIndex];
-                    const pedido = [parameters.pedidoBajo, parameters.pedidoMedio, parameters.pedidoAlto][altIndex];
-                    const diferencia = pedido - demanda;
-                    
-                    let descripcion = '';
-                    if (diferencia > 0) {
-                        descripcion = `Exceso: ${diferencia} u`;
-                    } else if (diferencia < 0) {
-                        descripcion = `Faltantes: ${Math.abs(diferencia)} u`;
-                    } else {
-                        descripcion = 'Equilibrio';
-                    }
-                    
-                    outcomes[outcomeIndex].innerHTML = `💰 $${costo.toLocaleString()}<br><small>${descripcion}</small>`;
-                    
-                    // Actualizar clase CSS según el resultado
-                    outcomes[outcomeIndex].className = diferencia === 0 ? 'outcome cost-positive' : 'outcome cost-negative';
-                    
-                    outcomeIndex++;
-                });
-            });
-        }
-
-        // Función para actualizar las fórmulas de ejemplo
-        function updateExampleFormulas() {
-            // Actualizar fórmula general
-            document.getElementById('formula-general').innerHTML = 
-                `Costo Total = ${parameters.costoFijo} + (Pedido × ${parameters.costoUnitario}) + Almacenamiento + Faltantes`;
-            
-            // Actualizar lista de parámetros
-            document.getElementById('parametros-actuales').innerHTML = `
-                <li>Costo Fijo = $${parameters.costoFijo}</li>
-                <li>Costo Unitario = $${parameters.costoUnitario}</li>
-                <li>Almacenamiento = $${parameters.costoAlmacen} × (Pedido - Demanda) si Pedido > Demanda</li>
-                <li>Faltantes = $${parameters.costoFaltante} × (Demanda - Pedido) si Demanda > Pedido</li>
-            `;
-            
-            // Ejemplo 1: Pedido Bajo vs Alta Demanda
-            const faltantes1 = parameters.demandaAlta - parameters.pedidoBajo;
-            const costo1 = calculateCost(parameters.pedidoBajo, parameters.demandaAlta);
-            document.getElementById('ejemplo-1').innerHTML = `
-                Pedido = ${parameters.pedidoBajo}, Demanda = ${parameters.demandaAlta}<br>
-                Faltantes = ${parameters.demandaAlta} - ${parameters.pedidoBajo} = ${faltantes1} unidades<br>
-                Costo = $${parameters.costoFijo} + (${parameters.pedidoBajo}×$${parameters.costoUnitario}) + $0 + (${faltantes1}×$${parameters.costoFaltante})<br>
-                Costo = $${parameters.costoFijo} + $${parameters.pedidoBajo * parameters.costoUnitario} + $0 + $${faltantes1 * parameters.costoFaltante} = $${costo1.toLocaleString()}
-            `;
-            
-            // Ejemplo 2: Pedido Alto vs Baja Demanda
-            const exceso2 = parameters.pedidoAlto - parameters.demandaBaja;
-            const costo2 = calculateCost(parameters.pedidoAlto, parameters.demandaBaja);
-            document.getElementById('ejemplo-2').innerHTML = `
-                Pedido = ${parameters.pedidoAlto}, Demanda = ${parameters.demandaBaja}<br>
-                Exceso = ${parameters.pedidoAlto} - ${parameters.demandaBaja} = ${exceso2} unidades<br>
-                Costo = $${parameters.costoFijo} + (${parameters.pedidoAlto}×$${parameters.costoUnitario}) + (${exceso2}×$${parameters.costoAlmacen}) + $0<br>
-                Costo = $${parameters.costoFijo} + $${parameters.pedidoAlto * parameters.costoUnitario} + $${exceso2 * parameters.costoAlmacen} + $0 = $${costo2.toLocaleString()}
-            `;
-        }
-
-        // Función para actualizar análisis de probabilidades
-        function updateProbabilityAnalysis() {
-            const grid = document.getElementById('prob-analysis-grid');
-            if (grid) {
-                grid.innerHTML = `
-                    <div class="prob-item">
-                        <strong>Alta Demanda:</strong> ${(parameters.probAlta * 100).toFixed(0)}%<br>
-                        <small>Escenario ${parameters.probAlta < 0.33 ? 'menos probable' : parameters.probAlta > 0.4 ? 'más probable' : 'moderadamente probable'}</small>
-                    </div>
-                    <div class="prob-item">
-                        <strong>Demanda Media:</strong> ${(parameters.probMedia * 100).toFixed(0)}%<br>
-                        <small>Escenario ${parameters.probMedia > 0.4 ? 'más probable' : parameters.probMedia < 0.25 ? 'menos probable' : 'moderadamente probable'}</small>
-                    </div>
-                    <div class="prob-item">
-                        <strong>Baja Demanda:</strong> ${(parameters.probBaja * 100).toFixed(0)}%<br>
-                        <small>Escenario ${parameters.probBaja < 0.25 ? 'menos probable' : parameters.probBaja > 0.4 ? 'más probable' : 'moderadamente probable'}</small>
-                    </div>
-                `;
-            }
-        }
-
-        // Función para recalcular todos los criterios
-        function recalculateAllCriteria() {
-            recalculateMaximin();
-            recalculateMaximax();
-            recalculateLaplace();
-            calculateHurwicz();
-        }
-
-        // Función para resetear resultados de simulación
-        function resetSimulationResults() {
-            const simResults = document.getElementById('sim-results');
-            if (simResults) {
-                simResults.style.display = 'none';
-            }
-            
-            const simTableBody = document.getElementById('sim-table-body');
-            if (simTableBody) {
-                simTableBody.innerHTML = '';
-            }
-            
-            const simResult = document.getElementById('sim-result');
-            if (simResult) {
-                simResult.innerHTML = '';
-            }
-        }
-
-        // Función para actualizar todas las tablas de criterios
-        function updateAllCriteriaTables() {
-            // Forzar actualización de todas las tablas con nuevos valores
-            setTimeout(() => {
-                recalculateMaximin();
-                recalculateMaximax();
-                recalculateLaplace();
-                calculateHurwicz();
-            }, 100);
-        }
-
-        // Función para recalcular Maximin
-        function recalculateMaximin() {
-            const table = document.querySelector('#maximin table tbody');
-            const alternativas = ['bajo', 'medio', 'alto'];
-            const nombres = ['Pedido Bajo', 'Pedido Medio', 'Pedido Alto'];
-            
-            let bestValue = Infinity;
-            let bestAlternative = '';
-            
-            alternativas.forEach((alt, index) => {
-                const costs = costsMatrix[alt];
-                const worstCost = Math.max(...costs);
-                
-                const row = table.children[index];
-                row.children[1].textContent = `$${costs[0].toLocaleString()}`;
-                row.children[2].textContent = `$${costs[1].toLocaleString()}`;
-                row.children[3].textContent = `$${costs[2].toLocaleString()}`;
-                row.children[4].innerHTML = `<span class="highlight-bad">$${worstCost.toLocaleString()}</span>`;
-                
-                if (worstCost < bestValue) {
-                    bestValue = worstCost;
-                    bestAlternative = nombres[index];
-                }
-            });
-            
-            // Actualizar filas ganadoras
-            table.querySelectorAll('tr').forEach(row => row.classList.remove('winner'));
-            const winnerIndex = alternativas.findIndex(alt => Math.max(...costsMatrix[alt]) === bestValue);
-            table.children[winnerIndex].classList.add('winner');
-            
-            // Actualizar resultado
-            document.querySelector('#maximin .result').innerHTML = 
-                `<strong>🏆 Decisión Maximin:</strong> ${bestAlternative} (el menor de los peores resultados: $${bestValue.toLocaleString()})`;
-        }
-
-        // Función para recalcular Maximax
-        function recalculateMaximax() {
-            const table = document.querySelector('#maximax table tbody');
-            const alternativas = ['bajo', 'medio', 'alto'];
-            const nombres = ['Pedido Bajo', 'Pedido Medio', 'Pedido Alto'];
-            
-            let bestValue = Infinity;
-            let bestAlternative = '';
-            
-            alternativas.forEach((alt, index) => {
-                const costs = costsMatrix[alt];
-                const bestCost = Math.min(...costs);
-                
-                const row = table.children[index];
-                row.children[1].textContent = `$${costs[0].toLocaleString()}`;
-                row.children[2].textContent = `$${costs[1].toLocaleString()}`;
-                row.children[3].textContent = `$${costs[2].toLocaleString()}`;
-                row.children[4].innerHTML = bestCost === Math.min(...costs) ? 
-                    `<span class="highlight-good">$${bestCost.toLocaleString()}</span>` : 
-                    `<span class="highlight-bad">$${bestCost.toLocaleString()}</span>`;
-                
-                if (bestCost < bestValue) {
-                    bestValue = bestCost;
-                    bestAlternative = nombres[index];
-                }
-            });
-            
-            // Actualizar filas ganadoras
-            table.querySelectorAll('tr').forEach(row => row.classList.remove('winner'));
-            const winnerIndex = alternativas.findIndex(alt => Math.min(...costsMatrix[alt]) === bestValue);
-            table.children[winnerIndex].classList.add('winner');
-            
-            // Actualizar resultado
-            document.querySelector('#maximax .result').innerHTML = 
-                `<strong>🏆 Decisión Maximax:</strong> ${bestAlternative} (el mejor de los mejores resultados: $${bestValue.toLocaleString()})`;
-        }
-
-        // Función para recalcular Laplace
-        function recalculateLaplace() {
-            const table = document.querySelector('#laplace table tbody');
-            const alternativas = ['bajo', 'medio', 'alto'];
-            const nombres = ['Pedido Bajo', 'Pedido Medio', 'Pedido Alto'];
-            
-            let bestValue = Infinity;
-            let bestAlternative = '';
-            
-            alternativas.forEach((alt, index) => {
-                const costs = costsMatrix[alt];
-                const avgCost = costs.reduce((a, b) => a + b, 0) / costs.length;
-                
-                const row = table.children[index];
-                row.children[1].textContent = `$${costs[0].toLocaleString()}`;
-                row.children[2].textContent = `$${costs[1].toLocaleString()}`;
-                row.children[3].textContent = `$${costs[2].toLocaleString()}`;
-                row.children[4].innerHTML = avgCost === bestValue ? 
-                    `<span class="highlight-good">$${Math.round(avgCost).toLocaleString()}</span>` : 
-                    `<span class="highlight-bad">$${Math.round(avgCost).toLocaleString()}</span>`;
-                
-                if (avgCost < bestValue) {
-                    bestValue = avgCost;
-                    bestAlternative = nombres[index];
-                }
-            });
-            
-            // Actualizar filas ganadoras
-            table.querySelectorAll('tr').forEach(row => row.classList.remove('winner'));
-            const winnerIndex = alternativas.findIndex(alt => {
-                const costs = costsMatrix[alt];
-                return (costs.reduce((a, b) => a + b, 0) / costs.length) === bestValue;
-            });
-            table.children[winnerIndex].classList.add('winner');
-            
-            // Actualizar resultado
-            document.querySelector('#laplace .result').innerHTML = 
-                `<strong>🏆 Decisión Laplace:</strong> ${bestAlternative} (menor costo promedio: $${Math.round(bestValue).toLocaleString()})`;
-        }
-
-        // Función para resetear a valores por defecto
-        function resetToDefaults() {
-            document.getElementById('costoFijo').value = 50;
-            document.getElementById('costoUnitario').value = 10;
-            document.getElementById('costoAlmacen').value = 1;
-            document.getElementById('costoFaltante').value = 5;
-            document.getElementById('pedidoBajo').value = 120;
-            document.getElementById('pedidoMedio').value = 200;
-            document.getElementById('pedidoAlto').value = 300;
-            document.getElementById('demandaAlta').value = 300;
-            document.getElementById('demandaMedia').value = 200;
-            document.getElementById('demandaBaja').value = 100;
-            document.getElementById('probAlta').value = 30;
-            document.getElementById('probMedia').value = 50;
-            
-            updateProbabilities();
-            updateParameters();
-            showUpdateIndicator("¡Valores restaurados por defecto!");
-        }
-
-        // Función para configurar listeners de eventos
-        function setupEventListeners() {
-            // Listeners para todos los inputs numéricos
-            const numericInputs = [
-                'costoFijo', 'costoUnitario', 'costoAlmacen', 'costoFaltante',
-                'pedidoBajo', 'pedidoMedio', 'pedidoAlto',
-                'demandaAlta', 'demandaMedia', 'demandaBaja'
-            ];
-            
-            numericInputs.forEach(inputId => {
-                const input = document.getElementById(inputId);
-                if (input) {
-                    // Actualizar en tiempo real mientras se escribe
-                    input.addEventListener('input', updateParameters);
-                    input.addEventListener('change', updateParameters);
-                    input.addEventListener('keyup', updateParameters);
-                }
-            });
-            
-            // Listeners para sliders de probabilidad
-            const probInputs = ['probAlta', 'probMedia'];
-            probInputs.forEach(inputId => {
-                const input = document.getElementById(inputId);
-                if (input) {
-                    input.addEventListener('input', updateProbabilities);
-                    input.addEventListener('change', updateProbabilities);
-                }
-            });
-            
-            // Listener para slider de Hurwicz
-            const alphaInput = document.getElementById('alpha');
-            if (alphaInput) {
-                alphaInput.addEventListener('input', calculateHurwicz);
-                alphaInput.addEventListener('change', calculateHurwicz);
-            }
-        }
-
-        // Función para generar valores aleatorios
-        function randomizeParameters() {
-            document.getElementById('costoFijo').value = Math.floor(Math.random() * 100) + 25;
-            document.getElementById('costoUnitario').value = Math.floor(Math.random() * 20) + 5;
-            document.getElementById('costoAlmacen').value = (Math.random() * 3 + 0.5).toFixed(1);
-            document.getElementById('costoFaltante').value = Math.floor(Math.random() * 10) + 2;
-            
-            const basePedido = Math.floor(Math.random() * 100) + 100;
-            document.getElementById('pedidoBajo').value = basePedido;
-            document.getElementById('pedidoMedio').value = basePedido + 50 + Math.floor(Math.random() * 50);
-            document.getElementById('pedidoAlto').value = basePedido + 150 + Math.floor(Math.random() * 100);
-            
-            const baseDemanda = Math.floor(Math.random() * 100) + 80;
-            document.getElementById('demandaBaja').value = baseDemanda;
-            document.getElementById('demandaMedia').value = baseDemanda + 80 + Math.floor(Math.random() * 60);
-            document.getElementById('demandaAlta').value = baseDemanda + 180 + Math.floor(Math.random() * 120);
-            
-            const prob1 = Math.floor(Math.random() * 40) + 15;
-            const prob2 = Math.floor(Math.random() * (85 - prob1)) + 15;
-            document.getElementById('probAlta').value = prob1;
-            document.getElementById('probMedia').value = prob2;
-            
-            updateProbabilities();
-            updateParameters();
-            showUpdateIndicator("¡Valores aleatorios generados!");
-        }
-
         function highlightPath(alternative) {
             // Remover highlights previos
             document.querySelectorAll('.alternative, .scenario-group').forEach(el => {
@@ -1727,18 +983,16 @@
             // Mostrar información adicional
             setTimeout(() => {
                 let message = '';
-                const pedidos = [parameters.pedidoBajo, parameters.pedidoMedio, parameters.pedidoAlto];
-                const nombres = ['Bajo', 'Medio', 'Alto'];
-                const index = ['bajo', 'medio', 'alto'].indexOf(alternative);
-                
-                message = `📊 Pedido ${nombres[index]} (${pedidos[index]} u): `;
-                
-                if (alternative === 'bajo') {
-                    message += 'Menor inversión inicial, pero alto riesgo de faltantes en demanda alta/media.';
-                } else if (alternative === 'medio') {
-                    message += 'Equilibrio entre costos, coincide con demanda media.';
-                } else {
-                    message += 'Cubre toda demanda alta, pero genera excesos costosos en demanda baja/media.';
+                switch(alternative) {
+                    case 'bajo':
+                        message = '📊 Pedido Bajo (120 u): Menor inversión inicial, pero alto riesgo de faltantes en demanda alta/media.';
+                        break;
+                    case 'medio':
+                        message = '⚖️ Pedido Medio (200 u): Equilibrio entre costos, coincide exactamente con demanda media.';
+                        break;
+                    case 'alto':
+                        message = '📈 Pedido Alto (300 u): Cubre toda demanda alta, pero genera excesos costosos en demanda baja/media.';
+                        break;
                 }
                 
                 // Crear o actualizar mensaje
@@ -1773,6 +1027,22 @@
             }, 300);
         }
 
+        // Agregar animación CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
         // Funciones para los criterios de decisión
         function showCriteria(criteriaId) {
             // Ocultar todos los contenidos
@@ -1797,29 +1067,29 @@
             const alpha = parseFloat(document.getElementById('alpha').value);
             document.getElementById('alpha-value').textContent = alpha;
             
-            const alternativas = ['bajo', 'medio', 'alto'];
-            const nombres = ['Pedido Bajo', 'Pedido Medio', 'Pedido Alto'];
+            // Datos de las alternativas [mejor, peor]
+            const alternatives = {
+                bajo: [1270, 2150],
+                medio: [2050, 2550],
+                alto: [3050, 3250]
+            };
             
             let bestValue = Infinity;
             let bestAlternative = '';
             
             // Calcular valor Hurwicz para cada alternativa
-            alternativas.forEach((alt, index) => {
-                const costs = costsMatrix[alt];
-                const mejor = Math.min(...costs);
-                const peor = Math.max(...costs);
+            Object.keys(alternatives).forEach(alt => {
+                const [mejor, peor] = alternatives[alt];
                 const hurwiczValue = alpha * mejor + (1 - alpha) * peor;
                 
                 // Actualizar la tabla
-                const row = document.getElementById(`hurwicz-${alt}`);
-                row.children[1].textContent = `$${mejor.toLocaleString()}`;
-                row.children[2].textContent = `$${peor.toLocaleString()}`;
-                row.children[3].textContent = `$${Math.round(hurwiczValue).toLocaleString()}`;
+                const valueCell = document.querySelector(`#hurwicz-${alt} .hurwicz-value`);
+                valueCell.textContent = `$${Math.round(hurwiczValue).toLocaleString()}`;
                 
                 // Encontrar la mejor alternativa
                 if (hurwiczValue < bestValue) {
                     bestValue = hurwiczValue;
-                    bestAlternative = nombres[index];
+                    bestAlternative = alt;
                 }
             });
             
@@ -1827,18 +1097,15 @@
             document.querySelectorAll('#hurwicz-table tr').forEach(row => {
                 row.classList.remove('winner');
             });
-            
-            const winnerIndex = alternativas.findIndex(alt => {
-                const costs = costsMatrix[alt];
-                const mejor = Math.min(...costs);
-                const peor = Math.max(...costs);
-                return Math.round(alpha * mejor + (1 - alpha) * peor) === Math.round(bestValue);
-            });
-            
-            document.getElementById(`hurwicz-${alternativas[winnerIndex]}`).classList.add('winner');
+            document.getElementById(`hurwicz-${bestAlternative}`).classList.add('winner');
             
             // Actualizar resultado
-            document.getElementById('hurwicz-winner').textContent = bestAlternative;
+            const alternativeNames = {
+                bajo: 'Pedido Bajo',
+                medio: 'Pedido Medio',
+                alto: 'Pedido Alto'
+            };
+            document.getElementById('hurwicz-winner').textContent = alternativeNames[bestAlternative];
         }
 
         // Función para ejecutar simulación
@@ -1851,14 +1118,20 @@
             button.disabled = true;
             
             setTimeout(() => {
-                // Probabilidades actuales
-                const probabilities = [parameters.probAlta, parameters.probMedia, parameters.probBaja];
+                // Probabilidades reales
+                const probabilities = [0.3, 0.5, 0.2]; // Alta, Media, Baja
+                
+                // Costos por alternativa y escenario
+                const costs = {
+                    bajo: [2150, 1650, 1270],
+                    medio: [2550, 2050, 2150],
+                    alto: [3050, 3150, 3250]
+                };
                 
                 const results = {};
-                const alternativas = ['bajo', 'medio', 'alto'];
                 
                 // Simular para cada alternativa
-                alternativas.forEach(alt => {
+                Object.keys(costs).forEach(alt => {
                     const simResults = [];
                     
                     for (let i = 0; i < iterations; i++) {
@@ -1873,7 +1146,7 @@
                             scenario = 2; // Baja demanda
                         }
                         
-                        simResults.push(costsMatrix[alt][scenario]);
+                        simResults.push(costs[alt][scenario]);
                     }
                     
                     // Calcular estadísticas
@@ -1944,35 +1217,8 @@
             `;
         }
 
-        // Agregar animación CSS
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-
         // Efecto de entrada inicial
         window.addEventListener('load', () => {
-            // Configurar todos los event listeners
-            setupEventListeners();
-            
-            // Inicializar parámetros
-            recalculateCosts();
-            updateTreeDisplay();
-            updateExampleFormulas();
-            updateProbabilityAnalysis();
-            recalculateAllCriteria();
-            
-            // Animación de entrada
             const elements = document.querySelectorAll('.decision-node, .alternative, .scenario, .outcome');
             elements.forEach((el, index) => {
                 el.style.opacity = '0';
@@ -1986,10 +1232,7 @@
             
             // Inicializar Hurwicz
             calculateHurwicz();
-            
-            // Mensaje inicial
-            showUpdateIndicator("¡Sistema inicializado! Cambia cualquier valor para ver actualizaciones en tiempo real.");
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'987d2bf107120ce3',t:'MTc1OTMzNDQxMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'987c977386790ce3',t:'MTc1OTMyODMzMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criterios de Decisión bajo Incertidumbre</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .result-highlight { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <div class="gradient-bg text-white py-8">
+        <div class="max-w-6xl mx-auto px-6">
+            <h1 class="text-4xl font-bold mb-4">🎯 Criterios de Decisión bajo Incertidumbre</h1>
+            <p class="text-xl opacity-90">Explora los cuatro métodos principales para tomar decisiones cuando no conoces las probabilidades</p>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-6 py-8">
+        <!-- Input Section -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-6 text-gray-800">📊 Configura tu Matriz de Decisión</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Número de Alternativas</label>
+                    <input type="number" id="numAlternatives" value="3" min="2" max="5" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Número de Estados</label>
+                    <input type="number" id="numStates" value="3" min="2" max="5" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Coeficiente α (Hurwicz) - Nivel de Optimismo</label>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-500">Pesimista</span>
+                    <input type="range" id="alphaSlider" min="0" max="1" step="0.1" value="0.6" 
+                           class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <span class="text-sm text-gray-500">Optimista</span>
+                    <span id="alphaValue" class="font-semibold text-blue-600 min-w-[3rem]">0.6</span>
+                </div>
+            </div>
+
+            <button onclick="generateMatrix()" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                Generar Matriz
+            </button>
+        </div>
+
+        <!-- Matrix Input -->
+        <div id="matrixSection" class="bg-white rounded-xl shadow-lg p-6 mb-8" style="display: none;">
+            <h3 class="text-xl font-semibold mb-4 text-gray-800">💰 Matriz de Resultados (en miles $)</h3>
+            <div id="matrixContainer"></div>
+            <button onclick="calculateResults()" 
+                    class="mt-4 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                Calcular Criterios
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" style="display: none;">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Maximax Card -->
+                <div class="bg-white rounded-xl shadow-lg p-6 card-hover border-l-4 border-green-500">
+                    <div class="flex items-center mb-4">
+                        <span class="text-2xl mr-3">📈</span>
+                        <h3 class="text-lg font-semibold text-gray-800">Optimismo (Maximax)</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3">Mejor resultado posible</p>
+                    <div id="maximaxResult" class="text-2xl font-bold text-green-600"></div>
+                    <div id="maximaxChoice" class="text-sm text-gray-500 mt-2"></div>
+                </div>
+
+                <!-- Maximin Card -->
+                <div class="bg-white rounded-xl shadow-lg p-6 card-hover border-l-4 border-blue-500">
+                    <div class="flex items-center mb-4">
+                        <span class="text-2xl mr-3">🛡️</span>
+                        <h3 class="text-lg font-semibold text-gray-800">Pesimismo (Maximin)</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3">Mejor de los peores</p>
+                    <div id="maximinResult" class="text-2xl font-bold text-blue-600"></div>
+                    <div id="maximinChoice" class="text-sm text-gray-500 mt-2"></div>
+                </div>
+
+                <!-- Laplace Card -->
+                <div class="bg-white rounded-xl shadow-lg p-6 card-hover border-l-4 border-purple-500">
+                    <div class="flex items-center mb-4">
+                        <span class="text-2xl mr-3">⚖️</span>
+                        <h3 class="text-lg font-semibold text-gray-800">Laplace</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3">Promedio equiprobable</p>
+                    <div id="laplaceResult" class="text-2xl font-bold text-purple-600"></div>
+                    <div id="laplaceChoice" class="text-sm text-gray-500 mt-2"></div>
+                </div>
+
+                <!-- Hurwicz Card -->
+                <div class="bg-white rounded-xl shadow-lg p-6 card-hover border-l-4 border-orange-500">
+                    <div class="flex items-center mb-4">
+                        <span class="text-2xl mr-3">🎯</span>
+                        <h3 class="text-lg font-semibold text-gray-800">Hurwicz</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3">Combinación ponderada</p>
+                    <div id="hurwiczResult" class="text-2xl font-bold text-orange-600"></div>
+                    <div id="hurwiczChoice" class="text-sm text-gray-500 mt-2"></div>
+                </div>
+            </div>
+
+            <!-- Detailed Results Table -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800">📋 Análisis Detallado</h3>
+                <div class="overflow-x-auto">
+                    <table id="detailedTable" class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="border border-gray-300 px-4 py-2 text-left">Alternativa</th>
+                                <th class="border border-gray-300 px-4 py-2 text-center">Máximo</th>
+                                <th class="border border-gray-300 px-4 py-2 text-center">Mínimo</th>
+                                <th class="border border-gray-300 px-4 py-2 text-center">Promedio</th>
+                                <th class="border border-gray-300 px-4 py-2 text-center">Hurwicz</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailedTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example Section -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mt-8">
+            <h3 class="text-xl font-semibold mb-4 text-gray-800">💡 Ejemplo Práctico</h3>
+            <button onclick="loadExample()" 
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium transition-colors mb-4">
+                Cargar Ejemplo: Inversión en Proyectos
+            </button>
+            <div id="exampleDescription" class="text-gray-600"></div>
+        </div>
+    </div>
+
+    <script>
+        let matrix = [];
+        let numAlternatives = 3;
+        let numStates = 3;
+
+        // Update alpha value display
+        document.getElementById('alphaSlider').addEventListener('input', function() {
+            document.getElementById('alphaValue').textContent = this.value;
+        });
+
+        function generateMatrix() {
+            numAlternatives = parseInt(document.getElementById('numAlternatives').value);
+            numStates = parseInt(document.getElementById('numStates').value);
+            
+            const container = document.getElementById('matrixContainer');
+            let html = '<div class="overflow-x-auto"><table class="w-full border-collapse border border-gray-300">';
+            
+            // Header
+            html += '<thead><tr class="bg-gray-100"><th class="border border-gray-300 px-4 py-2">Alternativa</th>';
+            for (let j = 0; j < numStates; j++) {
+                html += `<th class="border border-gray-300 px-4 py-2">Estado ${j + 1}</th>`;
+            }
+            html += '</tr></thead><tbody>';
+            
+            // Rows
+            for (let i = 0; i < numAlternatives; i++) {
+                html += `<tr><td class="border border-gray-300 px-4 py-2 font-medium bg-gray-50">A${i + 1}</td>`;
+                for (let j = 0; j < numStates; j++) {
+                    const value = Math.floor(Math.random() * 100) + 20; // Random values 20-120
+                    html += `<td class="border border-gray-300 px-2 py-2">
+                        <input type="number" id="cell_${i}_${j}" value="${value}" 
+                               class="w-full px-2 py-1 border border-gray-200 rounded text-center focus:ring-2 focus:ring-blue-500">
+                    </td>`;
+                }
+                html += '</tr>';
+            }
+            
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+            document.getElementById('matrixSection').style.display = 'block';
+        }
+
+        function calculateResults() {
+            // Read matrix values
+            matrix = [];
+            for (let i = 0; i < numAlternatives; i++) {
+                matrix[i] = [];
+                for (let j = 0; j < numStates; j++) {
+                    matrix[i][j] = parseFloat(document.getElementById(`cell_${i}_${j}`).value) || 0;
+                }
+            }
+
+            const alpha = parseFloat(document.getElementById('alphaSlider').value);
+
+            // Calculate criteria
+            const maximax = calculateMaximax();
+            const maximin = calculateMaximin();
+            const laplace = calculateLaplace();
+            const hurwicz = calculateHurwicz(alpha);
+
+            // Display results
+            displayResults(maximax, maximin, laplace, hurwicz);
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function calculateMaximax() {
+            let bestValue = -Infinity;
+            let bestAlternative = 0;
+            
+            for (let i = 0; i < numAlternatives; i++) {
+                const maxValue = Math.max(...matrix[i]);
+                if (maxValue > bestValue) {
+                    bestValue = maxValue;
+                    bestAlternative = i;
+                }
+            }
+            
+            return { value: bestValue, alternative: bestAlternative };
+        }
+
+        function calculateMaximin() {
+            let bestValue = -Infinity;
+            let bestAlternative = 0;
+            
+            for (let i = 0; i < numAlternatives; i++) {
+                const minValue = Math.min(...matrix[i]);
+                if (minValue > bestValue) {
+                    bestValue = minValue;
+                    bestAlternative = i;
+                }
+            }
+            
+            return { value: bestValue, alternative: bestAlternative };
+        }
+
+        function calculateLaplace() {
+            let bestValue = -Infinity;
+            let bestAlternative = 0;
+            
+            for (let i = 0; i < numAlternatives; i++) {
+                const avgValue = matrix[i].reduce((sum, val) => sum + val, 0) / numStates;
+                if (avgValue > bestValue) {
+                    bestValue = avgValue;
+                    bestAlternative = i;
+                }
+            }
+            
+            return { value: bestValue, alternative: bestAlternative };
+        }
+
+        function calculateHurwicz(alpha) {
+            let bestValue = -Infinity;
+            let bestAlternative = 0;
+            
+            for (let i = 0; i < numAlternatives; i++) {
+                const maxValue = Math.max(...matrix[i]);
+                const minValue = Math.min(...matrix[i]);
+                const hurwiczValue = alpha * maxValue + (1 - alpha) * minValue;
+                
+                if (hurwiczValue > bestValue) {
+                    bestValue = hurwiczValue;
+                    bestAlternative = i;
+                }
+            }
+            
+            return { value: bestValue, alternative: bestAlternative };
+        }
+
+        function displayResults(maximax, maximin, laplace, hurwicz) {
+            // Update result cards
+            document.getElementById('maximaxResult').textContent = `$${maximax.value.toFixed(1)}k`;
+            document.getElementById('maximaxChoice').textContent = `Alternativa A${maximax.alternative + 1}`;
+            
+            document.getElementById('maximinResult').textContent = `$${maximin.value.toFixed(1)}k`;
+            document.getElementById('maximinChoice').textContent = `Alternativa A${maximin.alternative + 1}`;
+            
+            document.getElementById('laplaceResult').textContent = `$${laplace.value.toFixed(1)}k`;
+            document.getElementById('laplaceChoice').textContent = `Alternativa A${laplace.alternative + 1}`;
+            
+            document.getElementById('hurwiczResult').textContent = `$${hurwicz.value.toFixed(1)}k`;
+            document.getElementById('hurwiczChoice').textContent = `Alternativa A${hurwicz.alternative + 1}`;
+
+            // Update detailed table
+            updateDetailedTable();
+        }
+
+        function updateDetailedTable() {
+            const alpha = parseFloat(document.getElementById('alphaSlider').value);
+            const tbody = document.getElementById('detailedTableBody');
+            let html = '';
+
+            for (let i = 0; i < numAlternatives; i++) {
+                const maxValue = Math.max(...matrix[i]);
+                const minValue = Math.min(...matrix[i]);
+                const avgValue = matrix[i].reduce((sum, val) => sum + val, 0) / numStates;
+                const hurwiczValue = alpha * maxValue + (1 - alpha) * minValue;
+
+                html += `<tr class="hover:bg-gray-50">
+                    <td class="border border-gray-300 px-4 py-2 font-medium">A${i + 1}</td>
+                    <td class="border border-gray-300 px-4 py-2 text-center">${maxValue.toFixed(1)}</td>
+                    <td class="border border-gray-300 px-4 py-2 text-center">${minValue.toFixed(1)}</td>
+                    <td class="border border-gray-300 px-4 py-2 text-center">${avgValue.toFixed(1)}</td>
+                    <td class="border border-gray-300 px-4 py-2 text-center">${hurwiczValue.toFixed(1)}</td>
+                </tr>`;
+            }
+
+            tbody.innerHTML = html;
+        }
+
+        function loadExample() {
+            document.getElementById('numAlternatives').value = 3;
+            document.getElementById('numStates').value = 4;
+            document.getElementById('alphaSlider').value = 0.6;
+            document.getElementById('alphaValue').textContent = '0.6';
+            
+            generateMatrix();
+            
+            // Set example values
+            const exampleMatrix = [
+                [120, 80, 60, 40],  // Proyecto Tecnológico
+                [90, 85, 75, 70],   // Proyecto Inmobiliario  
+                [70, 65, 60, 55]    // Bonos del Gobierno
+            ];
+            
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 4; j++) {
+                    document.getElementById(`cell_${i}_${j}`).value = exampleMatrix[i][j];
+                }
+            }
+            
+            document.getElementById('exampleDescription').innerHTML = `
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-blue-800 mb-2">Escenario: Decisión de Inversión</h4>
+                    <p class="text-blue-700 mb-2">Una empresa debe elegir entre tres proyectos de inversión considerando cuatro posibles estados económicos:</p>
+                    <ul class="text-blue-700 space-y-1 ml-4">
+                        <li>• <strong>A1 - Proyecto Tecnológico:</strong> Alto riesgo, alta recompensa</li>
+                        <li>• <strong>A2 - Proyecto Inmobiliario:</strong> Riesgo moderado, retorno estable</li>
+                        <li>• <strong>A3 - Bonos del Gobierno:</strong> Bajo riesgo, retorno conservador</li>
+                    </ul>
+                    <p class="text-blue-700 mt-2">Los valores representan ganancias esperadas en miles de dólares según diferentes escenarios económicos.</p>
+                </div>
+            `;
+            
+            calculateResults();
+        }
+
+        // Initialize with default matrix
+        generateMatrix();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97fab66a81650314',t:'MTc1Nzk2NjQ1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Árbol de Decisión - Gestión de Inventario</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .tree-container {
+            position: relative;
+            overflow-x: auto;
+            padding: 20px 0;
+        }
+
+        .tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 1200px;
+        }
+
+        .decision-node {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 1.1em;
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .alternatives-container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .alternative {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 500;
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .alternative:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.4);
+        }
+
+        .scenarios-container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .scenario-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .scenario {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .outcome {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            margin: 5px 0;
+            box-shadow: 0 3px 8px rgba(39, 174, 96, 0.3);
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .cost-negative {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .cost-positive {
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+
+        .probability {
+            font-size: 0.8em;
+            opacity: 0.9;
+            margin-top: 3px;
+        }
+
+        .line {
+            position: absolute;
+            background: #34495e;
+            z-index: -1;
+        }
+
+        .vertical-line {
+            width: 2px;
+            height: 40px;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .horizontal-line {
+            height: 2px;
+            width: 80%;
+            top: 40px;
+            left: 10%;
+        }
+
+        .calculations {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #3498db;
+        }
+
+        .calculations h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .calc-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .calc-item h4 {
+            color: #e74c3c;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .formula {
+            background: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+
+        .legend {
+            margin-top: 30px;
+            padding: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+        }
+
+        .legend h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .criteria-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #9b59b6;
+        }
+
+        .criteria-section h3 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1.4em;
+        }
+
+        .criteria-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            box-shadow: 0 6px 15px rgba(155, 89, 182, 0.4);
+        }
+
+        .criteria-content {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .criteria-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .criteria-content h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .criteria-table {
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .criteria-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .criteria-table th {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .criteria-table td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .criteria-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .criteria-table tr.winner {
+            background: linear-gradient(135deg, #d5f4e6, #a8e6cf);
+            font-weight: 600;
+        }
+
+        .highlight-good {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .highlight-bad {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .hurwicz-controls {
+            margin: 20px 0;
+            padding: 20px;
+            background: #ecf0f1;
+            border-radius: 8px;
+        }
+
+        .hurwicz-controls label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .hurwicz-controls input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .hurwicz-controls small {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .simulation-controls {
+            margin: 20px 0;
+            padding: 20px;
+            background: #ecf0f1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .sim-button {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(230, 126, 34, 0.3);
+        }
+
+        .sim-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(230, 126, 34, 0.4);
+        }
+
+        .simulation-controls select {
+            padding: 8px 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .simulation-results {
+            margin-top: 20px;
+        }
+
+        .probability-analysis {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .probability-analysis h5 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .prob-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .prob-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .tree {
+                min-width: 800px;
+            }
+            
+            .alternatives-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .scenarios-container {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .criteria-tabs {
+                justify-content: center;
+            }
+
+            .tab-button {
+                flex: 1;
+                min-width: 100px;
+            }
+
+            .simulation-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .criteria-table {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌳 Árbol de Decisión - Gestión de Inventario</h1>
+            <p>Distribuciones Rápidas S.A.S. - Análisis de Decisiones bajo Incertidumbre</p>
+        </div>
+
+        <div class="content">
+            <div class="tree-container">
+                <div class="tree">
+                    <!-- Nodo de decisión principal -->
+                    <div class="decision-node">
+                        📊 DECISIÓN: ¿Cuánto inventario pedir?
+                        <div class="line vertical-line"></div>
+                    </div>
+
+                    <!-- Alternativas de pedido -->
+                    <div class="alternatives-container">
+                        <div class="line horizontal-line"></div>
+                        
+                        <div class="alternative" onclick="highlightPath('bajo')">
+                            📦 Pedido Bajo<br>
+                            <small>120 unidades</small>
+                            <div class="line vertical-line"></div>
+                        </div>
+                        
+                        <div class="alternative" onclick="highlightPath('medio')">
+                            📦 Pedido Medio<br>
+                            <small>200 unidades</small>
+                            <div class="line vertical-line"></div>
+                        </div>
+                        
+                        <div class="alternative" onclick="highlightPath('alto')">
+                            📦 Pedido Alto<br>
+                            <small>300 unidades</small>
+                            <div class="line vertical-line"></div>
+                        </div>
+                    </div>
+
+                    <!-- Escenarios de demanda y resultados -->
+                    <div class="scenarios-container">
+                        <!-- Pedido Bajo -->
+                        <div class="scenario-group">
+                            <div class="scenario">
+                                🔥 Alta Demanda<br>
+                                <small>300 unidades</small>
+                                <div class="probability">P = 0.30</div>
+                            </div>
+                            <div class="outcome cost-negative">
+                                💰 $2,150<br>
+                                <small>Faltantes: 180 u</small>
+                            </div>
+
+                            <div class="scenario">
+                                📊 Demanda Media<br>
+                                <small>200 unidades</small>
+                                <div class="probability">P = 0.50</div>
+                            </div>
+                            <div class="outcome cost-negative">
+                                💰 $1,650<br>
+                                <small>Faltantes: 80 u</small>
+                            </div>
+
+                            <div class="scenario">
+                                📉 Baja Demanda<br>
+                                <small>100 unidades</small>
+                                <div class="probability">P = 0.20</div>
+                            </div>
+                            <div class="outcome cost-positive">
+                                💰 $1,270<br>
+                                <small>Exceso: 20 u</small>
+                            </div>
+                        </div>
+
+                        <!-- Pedido Medio -->
+                        <div class="scenario-group">
+                            <div class="scenario">
+                                🔥 Alta Demanda<br>
+                                <small>300 unidades</small>
+                                <div class="probability">P = 0.30</div>
+                            </div>
+                            <div class="outcome cost-negative">
+                                💰 $2,550<br>
+                                <small>Faltantes: 100 u</small>
+                            </div>
+
+                            <div class="scenario">
+                                📊 Demanda Media<br>
+                                <small>200 unidades</small>
+                                <div class="probability">P = 0.50</div>
+                            </div>
+                            <div class="outcome cost-positive">
+                                💰 $2,050<br>
+                                <small>Equilibrio</small>
+                            </div>
+
+                            <div class="scenario">
+                                📉 Baja Demanda<br>
+                                <small>100 unidades</small>
+                                <div class="probability">P = 0.20</div>
+                            </div>
+                            <div class="outcome cost-negative">
+                                💰 $2,150<br>
+                                <small>Exceso: 100 u</small>
+                            </div>
+                        </div>
+
+                        <!-- Pedido Alto -->
+                        <div class="scenario-group">
+                            <div class="scenario">
+                                🔥 Alta Demanda<br>
+                                <small>300 unidades</small>
+                                <div class="probability">P = 0.30</div>
+                            </div>
+                            <div class="outcome cost-positive">
+                                💰 $3,050<br>
+                                <small>Equilibrio</small>
+                            </div>
+
+                            <div class="scenario">
+                                📊 Demanda Media<br>
+                                <small>200 unidades</small>
+                                <div class="probability">P = 0.50</div>
+                            </div>
+                            <div class="outcome cost-negative">
+                                💰 $2,150<br>
+                                <small>Exceso: 100 u</small>
+                            </div>
+
+                            <div class="scenario">
+                                📉 Baja Demanda<br>
+                                <small>100 unidades</small>
+                                <div class="probability">P = 0.20</div>
+                            </div>
+                            <div class="outcome cost-negative">
+                                💰 $1,250<br>
+                                <small>Exceso: 200 u</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calculations">
+                <h3>📋 Cálculo de Costos por Escenario</h3>
+                
+                <div class="calc-grid">
+                    <div class="calc-item">
+                        <h4>Fórmula General de Costos</h4>
+                        <div class="formula">
+                            Costo Total = Costo Fijo + (Pedido × Costo Unitario) + Costo Almacenamiento + Costo Faltantes
+                        </div>
+                        <p><strong>Donde:</strong></p>
+                        <ul>
+                            <li>Costo Fijo = $50</li>
+                            <li>Costo Unitario = $10</li>
+                            <li>Almacenamiento = $1 × (Pedido - Demanda) si Pedido > Demanda</li>
+                            <li>Faltantes = $5 × (Demanda - Pedido) si Demanda > Pedido</li>
+                        </ul>
+                    </div>
+
+                    <div class="calc-item">
+                        <h4>Ejemplo: Pedido Bajo vs Alta Demanda</h4>
+                        <div class="formula">
+                            Pedido = 120, Demanda = 300<br>
+                            Faltantes = 300 - 120 = 180 unidades<br>
+                            Costo = $50 + (120×$10) + $0 + (180×$5)<br>
+                            Costo = $50 + $1,200 + $0 + $900 = $2,150
+                        </div>
+                    </div>
+
+                    <div class="calc-item">
+                        <h4>Ejemplo: Pedido Alto vs Baja Demanda</h4>
+                        <div class="formula">
+                            Pedido = 300, Demanda = 100<br>
+                            Exceso = 300 - 100 = 200 unidades<br>
+                            Costo = $50 + (300×$10) + (200×$1) + $0<br>
+                            Costo = $50 + $3,000 + $200 + $0 = $3,250
+                        </div>
+                        <p><strong>Nota:</strong> El costo mostrado en el árbol ($1,250) representa solo los costos variables adicionales por la decisión.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Criterios de Decisión -->
+            <div class="criteria-section">
+                <h3>🎯 Criterios de Decisión bajo Incertidumbre</h3>
+                
+                <div class="criteria-tabs">
+                    <button class="tab-button active" onclick="showCriteria('maximin')">Maximin</button>
+                    <button class="tab-button" onclick="showCriteria('maximax')">Maximax</button>
+                    <button class="tab-button" onclick="showCriteria('laplace')">Laplace</button>
+                    <button class="tab-button" onclick="showCriteria('hurwicz')">Hurwicz</button>
+                    <button class="tab-button" onclick="showCriteria('simulation')">Simulación</button>
+                </div>
+
+                <div id="maximin" class="criteria-content active">
+                    <h4>🛡️ Criterio Maximin (Pesimista)</h4>
+                    <p>Selecciona la alternativa con el <strong>mejor peor resultado</strong>. Asume el escenario más desfavorable para cada alternativa.</p>
+                    
+                    <div class="criteria-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Alternativa</th>
+                                    <th>Alta Demanda</th>
+                                    <th>Demanda Media</th>
+                                    <th>Baja Demanda</th>
+                                    <th>Peor Resultado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Pedido Bajo</td>
+                                    <td>$2,150</td>
+                                    <td>$1,650</td>
+                                    <td>$1,270</td>
+                                    <td class="highlight-bad">$2,150</td>
+                                </tr>
+                                <tr>
+                                    <td>Pedido Medio</td>
+                                    <td>$2,550</td>
+                                    <td>$2,050</td>
+                                    <td>$2,150</td>
+                                    <td class="highlight-bad">$2,550</td>
+                                </tr>
+                                <tr class="winner">
+                                    <td>Pedido Alto</td>
+                                    <td>$3,050</td>
+                                    <td>$3,150</td>
+                                    <td>$3,250</td>
+                                    <td class="highlight-good">$3,250</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="result">
+                        <strong>🏆 Decisión Maximin:</strong> Pedido Alto (el menor de los peores resultados: $3,250)
+                    </div>
+                </div>
+
+                <div id="maximax" class="criteria-content">
+                    <h4>🚀 Criterio Maximax (Optimista)</h4>
+                    <p>Selecciona la alternativa con el <strong>mejor mejor resultado</strong>. Asume el escenario más favorable para cada alternativa.</p>
+                    
+                    <div class="criteria-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Alternativa</th>
+                                    <th>Alta Demanda</th>
+                                    <th>Demanda Media</th>
+                                    <th>Baja Demanda</th>
+                                    <th>Mejor Resultado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="winner">
+                                    <td>Pedido Bajo</td>
+                                    <td>$2,150</td>
+                                    <td>$1,650</td>
+                                    <td>$1,270</td>
+                                    <td class="highlight-good">$1,270</td>
+                                </tr>
+                                <tr>
+                                    <td>Pedido Medio</td>
+                                    <td>$2,550</td>
+                                    <td>$2,050</td>
+                                    <td>$2,150</td>
+                                    <td class="highlight-bad">$2,050</td>
+                                </tr>
+                                <tr>
+                                    <td>Pedido Alto</td>
+                                    <td>$3,050</td>
+                                    <td>$3,150</td>
+                                    <td>$3,250</td>
+                                    <td class="highlight-bad">$3,050</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="result">
+                        <strong>🏆 Decisión Maximax:</strong> Pedido Bajo (el mejor de los mejores resultados: $1,270)
+                    </div>
+                </div>
+
+                <div id="laplace" class="criteria-content">
+                    <h4>⚖️ Criterio de Laplace (Equiprobable)</h4>
+                    <p>Asume <strong>igual probabilidad</strong> para cada escenario (33.33% cada uno) y calcula el valor esperado.</p>
+                    
+                    <div class="criteria-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Alternativa</th>
+                                    <th>Alta Demanda</th>
+                                    <th>Demanda Media</th>
+                                    <th>Baja Demanda</th>
+                                    <th>Promedio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="winner">
+                                    <td>Pedido Bajo</td>
+                                    <td>$2,150</td>
+                                    <td>$1,650</td>
+                                    <td>$1,270</td>
+                                    <td class="highlight-good">$1,690</td>
+                                </tr>
+                                <tr>
+                                    <td>Pedido Medio</td>
+                                    <td>$2,550</td>
+                                    <td>$2,050</td>
+                                    <td>$2,150</td>
+                                    <td class="highlight-bad">$2,250</td>
+                                </tr>
+                                <tr>
+                                    <td>Pedido Alto</td>
+                                    <td>$3,050</td>
+                                    <td>$3,150</td>
+                                    <td>$3,250</td>
+                                    <td class="highlight-bad">$3,150</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="result">
+                        <strong>🏆 Decisión Laplace:</strong> Pedido Bajo (menor costo promedio: $1,690)
+                    </div>
+                </div>
+
+                <div id="hurwicz" class="criteria-content">
+                    <h4>🎭 Criterio de Hurwicz (Realista)</h4>
+                    <p>Pondera optimismo y pesimismo con un coeficiente α. Ajusta el nivel de optimismo:</p>
+                    
+                    <div class="hurwicz-controls">
+                        <label for="alpha">Coeficiente de Optimismo (α): <span id="alpha-value">0.5</span></label>
+                        <input type="range" id="alpha" min="0" max="1" step="0.1" value="0.5" onchange="calculateHurwicz()">
+                        <small>α = 0 (totalmente pesimista) | α = 1 (totalmente optimista)</small>
+                    </div>
+                    
+                    <div class="criteria-table">
+                        <table id="hurwicz-table">
+                            <thead>
+                                <tr>
+                                    <th>Alternativa</th>
+                                    <th>Mejor Resultado</th>
+                                    <th>Peor Resultado</th>
+                                    <th>Valor Hurwicz</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="hurwicz-bajo">
+                                    <td>Pedido Bajo</td>
+                                    <td>$1,270</td>
+                                    <td>$2,150</td>
+                                    <td class="hurwicz-value">$1,710</td>
+                                </tr>
+                                <tr id="hurwicz-medio">
+                                    <td>Pedido Medio</td>
+                                    <td>$2,050</td>
+                                    <td>$2,550</td>
+                                    <td class="hurwicz-value">$2,300</td>
+                                </tr>
+                                <tr id="hurwicz-alto">
+                                    <td>Pedido Alto</td>
+                                    <td>$3,050</td>
+                                    <td>$3,250</td>
+                                    <td class="hurwicz-value">$3,150</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="result" id="hurwicz-result">
+                        <strong>🏆 Decisión Hurwicz:</strong> <span id="hurwicz-winner">Pedido Bajo</span>
+                    </div>
+                </div>
+
+                <div id="simulation" class="criteria-content">
+                    <h4>🎲 Simulación Computacional</h4>
+                    <p>Simula múltiples escenarios usando las probabilidades reales y calcula valores esperados.</p>
+                    
+                    <div class="simulation-controls">
+                        <button onclick="runSimulation()" class="sim-button">🚀 Ejecutar Simulación</button>
+                        <label for="iterations">Iteraciones: </label>
+                        <select id="iterations">
+                            <option value="1000">1,000</option>
+                            <option value="10000" selected>10,000</option>
+                            <option value="100000">100,000</option>
+                        </select>
+                    </div>
+                    
+                    <div class="simulation-results" id="sim-results" style="display: none;">
+                        <div class="criteria-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Alternativa</th>
+                                        <th>Costo Esperado</th>
+                                        <th>Desviación Estándar</th>
+                                        <th>Riesgo (CV)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sim-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="result" id="sim-result">
+                        </div>
+                        
+                        <div class="probability-analysis">
+                            <h5>📊 Análisis de Probabilidades Reales</h5>
+                            <div class="prob-grid">
+                                <div class="prob-item">
+                                    <strong>Alta Demanda:</strong> 30%<br>
+                                    <small>Escenario menos probable pero de alto impacto</small>
+                                </div>
+                                <div class="prob-item">
+                                    <strong>Demanda Media:</strong> 50%<br>
+                                    <small>Escenario más probable</small>
+                                </div>
+                                <div class="prob-item">
+                                    <strong>Baja Demanda:</strong> 20%<br>
+                                    <small>Escenario menos frecuente</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="legend">
+                <h4>🎨 Leyenda del Árbol de Decisión</h4>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #e74c3c, #c0392b);"></div>
+                    <span><strong>Nodo de Decisión:</strong> Punto donde se debe tomar una decisión</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #3498db, #2980b9);"></div>
+                    <span><strong>Alternativas:</strong> Opciones disponibles de pedido</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #f39c12, #e67e22);"></div>
+                    <span><strong>Escenarios:</strong> Estados de la naturaleza (demanda incierta)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #27ae60, #229954);"></div>
+                    <span><strong>Resultados Favorables:</strong> Costos menores o equilibrio</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #e74c3c, #c0392b);"></div>
+                    <span><strong>Resultados Desfavorables:</strong> Costos elevados por faltantes/excesos</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function highlightPath(alternative) {
+            // Remover highlights previos
+            document.querySelectorAll('.alternative, .scenario-group').forEach(el => {
+                el.style.opacity = '1';
+                el.style.transform = '';
+            });
+
+            // Highlight la alternativa seleccionada
+            const alternatives = document.querySelectorAll('.alternative');
+            const scenarioGroups = document.querySelectorAll('.scenario-group');
+            
+            alternatives.forEach((alt, index) => {
+                if ((alternative === 'bajo' && index === 0) ||
+                    (alternative === 'medio' && index === 1) ||
+                    (alternative === 'alto' && index === 2)) {
+                    alt.style.transform = 'scale(1.05)';
+                    alt.style.boxShadow = '0 15px 35px rgba(52, 152, 219, 0.6)';
+                    scenarioGroups[index].style.transform = 'scale(1.02)';
+                } else {
+                    alt.style.opacity = '0.6';
+                    scenarioGroups[index].style.opacity = '0.6';
+                }
+            });
+
+            // Mostrar información adicional
+            setTimeout(() => {
+                let message = '';
+                switch(alternative) {
+                    case 'bajo':
+                        message = '📊 Pedido Bajo (120 u): Menor inversión inicial, pero alto riesgo de faltantes en demanda alta/media.';
+                        break;
+                    case 'medio':
+                        message = '⚖️ Pedido Medio (200 u): Equilibrio entre costos, coincide exactamente con demanda media.';
+                        break;
+                    case 'alto':
+                        message = '📈 Pedido Alto (300 u): Cubre toda demanda alta, pero genera excesos costosos en demanda baja/media.';
+                        break;
+                }
+                
+                // Crear o actualizar mensaje
+                let messageDiv = document.getElementById('decision-message');
+                if (!messageDiv) {
+                    messageDiv = document.createElement('div');
+                    messageDiv.id = 'decision-message';
+                    messageDiv.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: linear-gradient(135deg, #2c3e50, #3498db);
+                        color: white;
+                        padding: 15px 20px;
+                        border-radius: 10px;
+                        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                        max-width: 300px;
+                        font-size: 0.9em;
+                        z-index: 1000;
+                        animation: slideIn 0.3s ease;
+                    `;
+                    document.body.appendChild(messageDiv);
+                }
+                messageDiv.textContent = message;
+                
+                // Remover mensaje después de 4 segundos
+                setTimeout(() => {
+                    if (messageDiv) {
+                        messageDiv.remove();
+                    }
+                }, 4000);
+            }, 300);
+        }
+
+        // Agregar animación CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Funciones para los criterios de decisión
+        function showCriteria(criteriaId) {
+            // Ocultar todos los contenidos
+            document.querySelectorAll('.criteria-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remover clase active de todos los botones
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Mostrar el contenido seleccionado
+            document.getElementById(criteriaId).classList.add('active');
+            
+            // Activar el botón correspondiente
+            event.target.classList.add('active');
+        }
+
+        // Función para calcular Hurwicz
+        function calculateHurwicz() {
+            const alpha = parseFloat(document.getElementById('alpha').value);
+            document.getElementById('alpha-value').textContent = alpha;
+            
+            // Datos de las alternativas [mejor, peor]
+            const alternatives = {
+                bajo: [1270, 2150],
+                medio: [2050, 2550],
+                alto: [3050, 3250]
+            };
+            
+            let bestValue = Infinity;
+            let bestAlternative = '';
+            
+            // Calcular valor Hurwicz para cada alternativa
+            Object.keys(alternatives).forEach(alt => {
+                const [mejor, peor] = alternatives[alt];
+                const hurwiczValue = alpha * mejor + (1 - alpha) * peor;
+                
+                // Actualizar la tabla
+                const valueCell = document.querySelector(`#hurwicz-${alt} .hurwicz-value`);
+                valueCell.textContent = `$${Math.round(hurwiczValue).toLocaleString()}`;
+                
+                // Encontrar la mejor alternativa
+                if (hurwiczValue < bestValue) {
+                    bestValue = hurwiczValue;
+                    bestAlternative = alt;
+                }
+            });
+            
+            // Actualizar filas ganadoras
+            document.querySelectorAll('#hurwicz-table tr').forEach(row => {
+                row.classList.remove('winner');
+            });
+            document.getElementById(`hurwicz-${bestAlternative}`).classList.add('winner');
+            
+            // Actualizar resultado
+            const alternativeNames = {
+                bajo: 'Pedido Bajo',
+                medio: 'Pedido Medio',
+                alto: 'Pedido Alto'
+            };
+            document.getElementById('hurwicz-winner').textContent = alternativeNames[bestAlternative];
+        }
+
+        // Función para ejecutar simulación
+        function runSimulation() {
+            const iterations = parseInt(document.getElementById('iterations').value);
+            const button = document.querySelector('.sim-button');
+            
+            // Mostrar estado de carga
+            button.textContent = '🔄 Simulando...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                // Probabilidades reales
+                const probabilities = [0.3, 0.5, 0.2]; // Alta, Media, Baja
+                
+                // Costos por alternativa y escenario
+                const costs = {
+                    bajo: [2150, 1650, 1270],
+                    medio: [2550, 2050, 2150],
+                    alto: [3050, 3150, 3250]
+                };
+                
+                const results = {};
+                
+                // Simular para cada alternativa
+                Object.keys(costs).forEach(alt => {
+                    const simResults = [];
+                    
+                    for (let i = 0; i < iterations; i++) {
+                        const random = Math.random();
+                        let scenario;
+                        
+                        if (random < probabilities[0]) {
+                            scenario = 0; // Alta demanda
+                        } else if (random < probabilities[0] + probabilities[1]) {
+                            scenario = 1; // Media demanda
+                        } else {
+                            scenario = 2; // Baja demanda
+                        }
+                        
+                        simResults.push(costs[alt][scenario]);
+                    }
+                    
+                    // Calcular estadísticas
+                    const mean = simResults.reduce((a, b) => a + b, 0) / iterations;
+                    const variance = simResults.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / iterations;
+                    const stdDev = Math.sqrt(variance);
+                    const cv = stdDev / mean; // Coeficiente de variación
+                    
+                    results[alt] = { mean, stdDev, cv };
+                });
+                
+                // Mostrar resultados
+                displaySimulationResults(results);
+                
+                // Restaurar botón
+                button.textContent = '🚀 Ejecutar Simulación';
+                button.disabled = false;
+                
+                // Mostrar sección de resultados
+                document.getElementById('sim-results').style.display = 'block';
+            }, 1000);
+        }
+
+        function displaySimulationResults(results) {
+            const tbody = document.getElementById('sim-table-body');
+            tbody.innerHTML = '';
+            
+            let bestAlternative = '';
+            let bestCost = Infinity;
+            
+            const alternativeNames = {
+                bajo: 'Pedido Bajo',
+                medio: 'Pedido Medio',
+                alto: 'Pedido Alto'
+            };
+            
+            Object.keys(results).forEach(alt => {
+                const { mean, stdDev, cv } = results[alt];
+                const row = document.createElement('tr');
+                
+                if (mean < bestCost) {
+                    bestCost = mean;
+                    bestAlternative = alt;
+                }
+                
+                row.innerHTML = `
+                    <td>${alternativeNames[alt]}</td>
+                    <td>$${Math.round(mean).toLocaleString()}</td>
+                    <td>$${Math.round(stdDev).toLocaleString()}</td>
+                    <td>${(cv * 100).toFixed(1)}%</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // Marcar ganador
+            const rows = tbody.querySelectorAll('tr');
+            Object.keys(results).forEach((alt, index) => {
+                if (alt === bestAlternative) {
+                    rows[index].classList.add('winner');
+                }
+            });
+            
+            // Actualizar resultado
+            document.getElementById('sim-result').innerHTML = `
+                <strong>🏆 Decisión por Simulación:</strong> ${alternativeNames[bestAlternative]} 
+                (Costo esperado: $${Math.round(bestCost).toLocaleString()})
+            `;
+        }
+
+        // Efecto de entrada inicial
+        window.addEventListener('load', () => {
+            const elements = document.querySelectorAll('.decision-node, .alternative, .scenario, .outcome');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    el.style.transition = 'all 0.6s ease';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+            
+            // Inicializar Hurwicz
+            calculateHurwicz();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'987c977386790ce3',t:'MTc1OTMyODMzMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
